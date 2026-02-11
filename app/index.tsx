@@ -1,10 +1,10 @@
-import { Ionicons } from "@expo/vector-icons"; // 🌟 追加
+import { Ionicons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 
-// Google Fonts
+// モバイル用のみGoogle Fontsを使用
 import {
   Outfit_400Regular,
   Outfit_700Bold,
@@ -30,13 +30,18 @@ import Profile from "./Profile";
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function App() {
-  const [fontsLoaded, fontError] = useFonts({
-    ...Ionicons.font, // 🌟 アイコンフォントをビルドに含める
-    Outfit: Outfit_400Regular,
-    "Outfit-Bold": Outfit_700Bold,
-    ZenKaku: ZenKakuGothicNew_400Regular,
-    "ZenKaku-Bold": ZenKakuGothicNew_700Bold,
-  });
+  // Web環境ではフォント読み込みをスキップ（HTMLのCSSで定義済み）
+  const [fontsLoaded, fontError] = useFonts(
+    Platform.OS === "web"
+      ? {} // Webでは空オブジェクト
+      : {
+          ...Ionicons.font,
+          Outfit: Outfit_400Regular,
+          "Outfit-Bold": Outfit_700Bold,
+          ZenKaku: ZenKakuGothicNew_400Regular,
+          "ZenKaku-Bold": ZenKakuGothicNew_700Bold,
+        },
+  );
 
   const [isAssetReady, setIsAssetReady] = useState(false);
   const [screen, setScreen] = useState("onboarding");
@@ -65,7 +70,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if ((fontsLoaded || fontError) && isAssetReady) {
+    // Webでは即座に表示、モバイルはフォント読み込み待ち
+    if (Platform.OS === "web" && isAssetReady) {
+      SplashScreen.hideAsync().catch(() => {});
+    } else if ((fontsLoaded || fontError) && isAssetReady) {
       SplashScreen.hideAsync().catch(() => {});
     }
   }, [fontsLoaded, fontError, isAssetReady]);
@@ -75,7 +83,8 @@ export default function App() {
     setScreen(target);
   };
 
-  if (!isAssetReady || (!fontsLoaded && !fontError)) {
+  // Webではアセット準備のみ待機
+  if (!isAssetReady || (Platform.OS !== "web" && !fontsLoaded && !fontError)) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color="#000" />

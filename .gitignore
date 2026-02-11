@@ -48,3 +48,4 @@ dist
 .env
 .DS_Store
 
+.vercel
