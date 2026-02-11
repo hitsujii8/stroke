@@ -1,0 +1,8 @@
+コードを修正した後、ファイルを書き出します。
+
+Bash
+npx expo export
+Vercelに再デプロイします。
+
+Bash
+npx vercel deploy dist --prod

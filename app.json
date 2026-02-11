@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "STROKE",
+    "slug": "STROKE",
+    "version": "1.0.1",
+    "platforms": ["ios", "android", "web"],
+    "icon": "./assets/images/icon.png",
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png",
+      "template": "web/index.html",
+      "build": {
+        "babel": {
+          "include": ["@expo/vector-icons"]
+        }
+      }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./app/assets/fonts/Outfit-Regular.ttf",
+            "./app/assets/fonts/Outfit-Medium.ttf",
+            "./app/assets/fonts/Outfit-Bold.ttf",
+            "./app/assets/fonts/Outfit-Black.ttf",
+            "./app/assets/fonts/ZenKakuGothic-Regular.ttf",
+            "./app/assets/fonts/ZenKakuGothic-Medium.ttf",
+            "./app/assets/fonts/ZenKakuGothic-Bold.ttf",
+            "./app/assets/fonts/ZenKakuGothic-Black.ttf",
+           
+          ]
+        }
+      ],
+      "expo-asset"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7b59fe42-a5a0-4802-919b-0e7bda8f1d72"
+      }
+    }
+  }
+}
