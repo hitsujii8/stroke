@@ -1,9 +1,10 @@
+import { Ionicons } from "@expo/vector-icons"; // 🌟 追加
 import { Asset } from "expo-asset";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 
-// 🌟 Google Fonts パッケージからインポートするように変更
+// Google Fonts
 import {
   Outfit_400Regular,
   Outfit_700Bold,
@@ -14,7 +15,7 @@ import {
   ZenKakuGothicNew_700Bold,
 } from "@expo-google-fonts/zen-kaku-gothic-new";
 
-// コンポーネントのインポート
+// コンポーネント
 import BottomNav from "./BottomNav";
 import Cart from "./Cart";
 import Coupons from "./Coupons";
@@ -29,8 +30,8 @@ import Profile from "./Profile";
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function App() {
-  // 🌟 公式パッケージのフォントを読み込み
   const [fontsLoaded, fontError] = useFonts({
+    ...Ionicons.font, // 🌟 アイコンフォントをビルドに含める
     Outfit: Outfit_400Regular,
     "Outfit-Bold": Outfit_700Bold,
     ZenKaku: ZenKakuGothicNew_400Regular,
@@ -46,22 +47,16 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
-        // 画像アセットのプリロード
         await Asset.loadAsync([
           require("./assets/card_bg.png"),
           require("./assets/hero_shodo.png"),
         ]);
-
         if (Platform.OS === "web") {
-          try {
-            const savedName = localStorage.getItem("stroke_user_name");
-            if (savedName) setUserName(savedName);
-          } catch (e) {
-            console.error("localStorage access error:", e);
-          }
+          const savedName = localStorage.getItem("stroke_user_name");
+          if (savedName) setUserName(savedName);
         }
       } catch (e) {
-        console.warn("Asset preparation error:", e);
+        console.warn(e);
       } finally {
         setIsAssetReady(true);
       }
@@ -74,14 +69,6 @@ export default function App() {
       SplashScreen.hideAsync().catch(() => {});
     }
   }, [fontsLoaded, fontError, isAssetReady]);
-
-  const handleSetName = (name: string) => {
-    setUserName(name || "Guest");
-    if (Platform.OS === "web") {
-      localStorage.setItem("stroke_user_name", name);
-    }
-    setScreen("membership");
-  };
 
   const navigateTo = (target: string, data?: any) => {
     if (target === "productDetail") setSelectedProduct(data);
@@ -104,7 +91,12 @@ export default function App() {
         )}
         {screen === "nameEntry" && (
           <NameEntry
-            onNext={handleSetName}
+            onNext={(name) => {
+              setUserName(name || "Guest");
+              if (Platform.OS === "web")
+                localStorage.setItem("stroke_user_name", name);
+              setScreen("membership");
+            }}
             onBack={() => setScreen("onboarding")}
           />
         )}
@@ -164,13 +156,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    // 🌟 Webブラウザが認識できる形式でフォントを指定
-    ...Platform.select({
-      web: {
-        fontFamily:
-          'Outfit, ZenKaku, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      },
-    }),
   },
   mainContent: { flex: 1 },
   loading: {
